@@ -14,6 +14,15 @@ function App() {
   const myAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"; // hardhat 0
   const myPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"; // hardhat 0
   
+  
+  const checkFlashbotsRpcContract = async (ethersProvider) => {
+    const flashbotsContract = new Contract("0xf1a54b0759b58661cEa17CfF19dd37940a9b5f1A", [{"inputs":[],"name":"isFlashRPC","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}], ethersProvider);
+    const result = await flashbotsContract.isFlashRPC();
+    console.log("FB contract result", result);
+    setIsFlashbots(result || false)
+  }
+
+  // !! DO NOT USE !! DEPRECATED AND CRUFTY
   const getNetVersion = async (provider, ethersProvider) => {
     // get net version: native method
     const netResOG = await provider.request({
@@ -67,19 +76,21 @@ function App() {
     // const ethersProvider = new providers.Web3Provider(web3);
     const ethersProvider = new providers.Web3Provider(provider);
     console.log("ethers provider", ethersProvider);
+    await ethersProvider.ready;
+    await checkFlashbotsRpcContract(ethersProvider);
 
-    const netRes = await getNetVersion(provider, ethersProvider);
+    // const netRes = await getNetVersion(provider, ethersProvider);
 
-    if (netRes.endsWith(".fb")) {
-      setIsFlashbots(true);
-    } else {
-      setIsFlashbots(false);
-    }
+    // if (netRes.endsWith(".fb")) {
+    //   setIsFlashbots(true);
+    // } else {
+    //   setIsFlashbots(false);
+    // }
 
     // add protect RPC to MM
     // !! doesn't work !!
-    const addNetRes = await addProtectRpc(ethersProvider);
-    console.log("add net res", addNetRes);
+    // const addNetRes = await addProtectRpc(ethersProvider);
+    // console.log("add net res", addNetRes);
   }
 
   load();
