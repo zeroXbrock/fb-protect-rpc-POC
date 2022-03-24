@@ -4,9 +4,10 @@ import { Contract, providers } from "ethers";
 // import Web3 from "web3";
 import detectEthProvider from "@metamask/detect-provider";
 import contracts from "./contracts";
+import { useIsFlashbots } from "./hooks"
 
 function App() {
-  const [isFlashbots, setIsFlashbots] = useState();
+  const isFlashbots = useIsFlashbots();
   // const web3Provider = Web3.givenProvider;
   // const ethersProvider = new providers.JsonRpcProvider();
   // console.log("web3", web3Provider);
@@ -15,12 +16,12 @@ function App() {
   const myPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"; // hardhat 0
   
   
-  const checkFlashbotsRpcContract = async (ethersProvider) => {
-    const flashbotsContract = new Contract("0xf1a54b0759b58661cEa17CfF19dd37940a9b5f1A", [{"inputs":[],"name":"isFlashRPC","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}], ethersProvider);
-    const result = await flashbotsContract.isFlashRPC();
-    console.log("FB contract result", result);
-    setIsFlashbots(result || false)
-  }
+  // const checkFlashbotsRpcContract = async (ethersProvider) => {
+  //   const flashbotsContract = new Contract("0xf1a54b0759b58661cEa17CfF19dd37940a9b5f1A", [{"inputs":[],"name":"isFlashRPC","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}], ethersProvider);
+  //   const result = await flashbotsContract.isFlashRPC();
+  //   console.log("FB contract result", result);
+  //   setIsFlashbots(result || false)
+  // }
 
   // !! DO NOT USE !! DEPRECATED AND CRUFTY
   const getNetVersion = async (provider, ethersProvider) => {
@@ -65,6 +66,7 @@ function App() {
   const load = async () => {
     // const web3 = window.ethereum;
     const provider = await detectEthProvider();
+    console.log("isFlashbots", isFlashbots);
     console.log("provider", provider);
 
     // refresh page when network changes
@@ -77,7 +79,6 @@ function App() {
     const ethersProvider = new providers.Web3Provider(provider);
     console.log("ethers provider", ethersProvider);
     await ethersProvider.ready;
-    await checkFlashbotsRpcContract(ethersProvider);
 
     // const netRes = await getNetVersion(provider, ethersProvider);
 
